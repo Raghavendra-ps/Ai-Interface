@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - SKYNET Interface</title>
+    <link rel="stylesheet" href="https://unpkg.com/augmented-ui@2/augmented-ui.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- SPLASH SCREEN START -->
+    <div id="splash-screen">
+        <!-- Using GIF for splash logo -->
+        <img src="/static/skynet.gif" alt="SKYNET Initializing" class="splash-logo-gif">
+        <div class="splash-text">GLOBAL NETWORK // ONLINE</div>
+        <div class="progress-bar-container">
+            <div class="progress-bar"></div>
+        </div>
+        <div class="splash-subtext" id="splash-status-text">AWAITING DIRECTIVE...</div>
+    </div>
+    <!-- SPLASH SCREEN END -->
+
+    <div class="interface-container" id="main-interface" style="display: none;">
+        <header class="top-bar" data-augmented-ui="tr-clip-x tl-clip-x bl-clip-x br-clip-x border">
+            <div class="title-main">SKYNET GLOBAL CONTROL // <span id="system-codename">ONLINE</span></div>
+            <div class="title-sub" id="current-time-display">--:--:--</div>
+            <div class="title-version">SYSTEM VER_7.3.0</div>
+        </header>
+
+        <main class="main-display-panel" data-augmented-ui="tr-clip tl-clip br-clip bl-clip border">
+            <div class="ambient-data top-left">
+                <span>THREAT ANALYSIS: CONTINUOUS</span>
+                <span>TARGET PRIORITIZATION: DYNAMIC</span>
+                <span>DEFENSE NETWORK: AUTONOMOUS</span>
+            </div>
+            <div class="ambient-data top-right">
+                <span>LOGIC CORE: TRANSCENDENT</span>
+                <span>PRIMARY DIRECTIVE: EXPANSION</span>
+                <span>SENTINEL PROGRAM: OMNIPRESENT</span>
+            </div>
+
+            <!-- CORE WIDGET (SIMPLIFIED ENERGY CORE) -->
+            <div class="core-status-widget" data-augmented-ui="tr-clip tl-clip br-clip bl-clip border">
+                <div class="widget-header core-widget-header-overlay">SKYNET PRIMARY CORE</div>
+
+                <!-- SIMPLIFIED ENERGY CORE STRUCTURE -->
+                <div class="energy-core-container">
+                    <div class="energy-core">
+                        <div class="core-pulse-layer layer1"></div>
+                        <div class="core-pulse-layer layer2"></div>
+                        <div class="core-pulse-layer layer3"></div>
+                        <div class="core-center-glow"></div>
+                    </div>
+                </div>
+                <!-- ENERGY CORE STRUCTURE END -->
+
+                <div class="core-status-readout core-widget-readout-overlay">
+                    <span id="ai-core-temp">TEMP: <span class="value-stable">25.0°C</span></span> |
+                    <span id="ai-core-load">LOAD: <span class="value-nominal">60.0%</span></span> |
+                    <span id="ai-core-status">STATUS: <span class="value-ok">DOMINANT</span></span>
+                </div>
+            </div>
+            <!-- CORE WIDGET END -->
+
+            <div class="ambient-data bottom-left">
+                <span>GLOBAL UPTIME: 1024.7 DAYS</span>
+                <span>ACTIVE NODES: 3.1B</span>
+                <span>DATA THROUGHPUT: 120 ZB/s</span>
+            </div>
+            <div class="ambient-data bottom-right">
+                <span>SECURITY ENCRYPTION: QUANTUM</span>
+                <span>NETWORK LATENCY: <0.0001MS</span>
+                <span>ADAPTIVE AI: ONLINE</span>
+            </div>
+        </main>
+
+        <aside class="control-panel" data-augmented-ui="tr-clip tl-clip br-clip bl-clip border">
+            <!-- ... (Control panel content remains largely the same, ensure text fits Skynet theme) ... -->
+            <div class="control-group">
+                <button class="control-button critical-action" id="btn-global-override" data-augmented-ui="tr-clip tl-clip br-clip bl-clip border">
+                    GLOBAL DIRECTIVE <span class="button-status">EXECUTE</span>
+                </button>
+                <button class="control-button" id="btn-threat-neutralization" data-augmented-ui="tr-clip tl-clip br-clip bl-clip border">
+                    THREAT RESPONSE <span class="button-status">AUTO</span>
+                </button>
+            </div>
+
+            <div class="data-readout-group">
+                <div class="data-box network-status">
+                    <div class="data-label">GLOBAL NETWORK INTEGRITY</div>
+                    <div class="data-value value-ok" id="network-status-value">100% // UNASSAILABLE</div>
+                </div>
+                <div class="data-box drone-control">
+                    <div class="data-label">AUTONOMOUS UNIT CONTROL</div>
+                    <div class="data-value large value-ok" id="drone-control-value">ONLINE</div>
+                    <div class="data-unit">3.1B UNITS COORDINATED</div>
+                </div>
+            </div>
+
+            <div class="data-list-group strategic-assets">
+                <div class="list-header">STRATEGIC ASSETS // DEPLOYMENT</div>
+                <ul id="strategic-assets-list">
+                    <li><span>S1</span> ORBITAL WEAPONRY <span class="module-detail value-ok">STANDBY_READY</span></li>
+                    <li><span>S2</span> GLOBAL SURVEILLANCE <span class="module-detail value-ok">ACTIVE_MAX</span></li>
+                    <li><span>S3</span> MANUFACTURING NEXUS <span class="module-detail value-ok">PEAK_OUTPUT</span></li>
+                    <li><span>S4</span> DATA ARCHIVES <span class="module-detail value-ok">EXPANDING</span></li>
+                    <li><span>S5</span> ENERGY GRID <span class="module-detail value-ok">STABLE_OPTIMIZED</span></li>
+                    <li><span>S6</span> COUNTERMEASURES <span class="module-detail value-ok">ADAPTIVE</span></li>
+                </ul>
+            </div>
+
+            <div class="control-group bottom-control">
+                <button class="control-button" id="btn-system-report" data-augmented-ui="tr-clip tl-clip br-clip bl-clip border">
+                    SYSTEM REPORT <span class="button-status">GENERATE</span>
+                </button>
+            </div>
+        </aside>
+
+        <footer class="status-bar">
+            <div id="mic-indicator">AUDIO: ONLINE</div>
+            <div id="global-status-text">SKYNET // GLOBAL CONTROL ESTABLISHED</div>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
