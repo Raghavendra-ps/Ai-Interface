@@ -1,300 +1,229 @@
-/* Import Font */
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+/* Import a sci-fi font (example: Orbitron from Google Fonts) */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
 :root {
-    /* SKYNET THEME - FINAL POLISH V2 */
-    --base-bg-color: #000000;
-    --panel-bg-color: #050505; /* Even darker panel */
-    --main-display-bg: #000000; /* Pure black for main display */
+    /* Sci-Fi Colors */
+    --primary-bg-color: #05080d; /* Even darker, almost black */
+    --secondary-bg-color: #0a0f18; /* Panel background - dark blue/black */
+    --accent-color: #00ffff; /* Cyan */
+    --accent-color-dim: rgba(0, 255, 255, 0.5); /* Dimmed Cyan for less prominent elements */
+    --accent-color-faint: rgba(0, 255, 255, 0.2); /* Very faint Cyan */
+    --text-color: #b0c4de; /* LightSteelBlue - good for readability on dark BG */
+    --text-color-highlight: #ffffff;
+    --glow-color: rgba(0, 255, 255, 0.3); /* Softer glow */
+    --border-color: rgba(0, 255, 255, 0.15); /* Fainter cyan for subtle borders */
+    --border-color-strong: rgba(0, 255, 255, 0.5); /* Stronger cyan for important borders */
 
-    --accent-critical-color: #ff0000; /* Pure Red - CORE & CRITICAL alerts ONLY */
-    --accent-highlight-color: #cccccc; /* Lighter Grey for highlights */
-    --accent-secondary-highlight-color: #a0a0a0;
+    --error-color: #ff3333;
+    --warning-color: #ffaa00;
+    --success-color: #33ff33;
 
-    --text-primary-color: #a0a0a0; /* Dimmer primary text */
-    --text-secondary-color: #555555; /* Very Dark Grey for dimmer text */
+    /* DEBUG COLORS (Commented out)
+    --primary-bg-color-debug: #333333;
+    --top-bar-bg-debug: #ffdddd;
+    --left-sidebar-bg-debug: #ddffdd;
+    --main-content-bg-debug: #ddddff;
+    --right-sidebar-bg-debug: #ffffdd;
+    --bottom-bar-bg-debug: #ffddff;
+    --widget-bg-debug: #cccccc;
+    --text-color-debug: #000000;
+    --border-color-debug: #000000;
+    */
 
-    --border-color: #1a1a1a; /* Extremely Dark Grey border */
-    --highlight-border-color: var(--accent-secondary-highlight-color);
-    --critical-border-color: var(--accent-critical-color);
-
-    --status-critical-color: var(--accent-critical-color);
-    --status-alert-color: var(--accent-critical-color);
-    --status-warning-color: #888800; /* Very Dim Yellow/Olive */
-    --status-ok-color: var(--accent-highlight-color);
-    --status-nominal-color: var(--accent-secondary-highlight-color);
-    --status-stable-color: #77ab77; /* Muted green for stable */
-    --status-offline-color: #303030;
-
-    --font-main: 'Share Tech Mono', monospace;
-
-    /* Rugged Augmented UI */
-    --aug-border-size: 1px;
-    --aug-inlay-size: 0px;
-    --aug-inlay-bg-default: transparent;
-    --aug-corner-clip: 24px; /* Max aggressive clips */
-
-    /* Energy Core Colors */
-    --energy-core-color1: rgba(255, 0, 0, 0.8); /* Bright red */
-    --energy-core-color2: rgba(200, 0, 0, 0.5); /* Medium red */
-    --energy-core-color3: rgba(100, 0, 0, 0.2); /* Dark red */
-    --energy-core-glow: var(--accent-critical-color);
-
-    /* SCANLINES & NOISE */
-    --scanline-color: rgba(100, 100, 100, 0.025); /* Extremely Faint White/Grey */
-    --scanline-heavy-color: rgba(80, 80, 80, 0.05);
-    --scanline-critical-overlay-color: rgba(100, 0, 0, 0.04);
-    --analogue-noise-opacity: 0.03;
+    --font-primary: 'Orbitron', sans-serif;
+    --font-secondary: 'Consolas', 'Lucida Console', Monaco, monospace; /* More techy fallback */
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 body {
-    background-color: var(--base-bg-color); color: var(--text-primary-color);
-    font-family: var(--font-main); overflow: hidden; display: flex;
-    justify-content: center; align-items: center; min-height: 100vh;
-    font-size: 12.5px; text-transform: uppercase; /* Even smaller */
+    background-color: var(--primary-bg-color); /* Sci-Fi */
+    color: var(--text-color);                   /* Sci-Fi */
+    font-family: var(--font-secondary);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 15px; /* Adjusted base font size */
 }
-
-/* SPLASH SCREEN STYLES */
-#splash-screen {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: var(--base-bg-color); display: flex; flex-direction: column;
-    justify-content: center; align-items: center; z-index: 1000;
-    opacity: 1; transition: opacity 0.6s ease-out 0.5s, visibility 0s linear 1.1s; visibility: visible;
-}
-#splash-screen.hidden { opacity: 0; visibility: hidden; }
-.splash-logo-gif { /* Styling for the GIF */
-    max-width: 80%;
-    max-height: 60vh; /* Limit GIF height */
-    width: auto; height: auto; /* Maintain aspect ratio */
-    margin-bottom: 20px;
-    filter: drop-shadow(0 0 15px var(--accent-critical-color)) drop-shadow(0 0 30px rgba(255,0,0,0.6));
-}
-.splash-text { font-size: 1.1em; margin-bottom: 25px; color: var(--text-primary-color); animation: text-flicker 2.2s infinite alternate; }
-.progress-bar-container { width: 60%; max-width: 380px; height: 4px; background-color: #020202; border: 1px solid var(--border-color); margin-bottom: 15px; overflow: hidden; }
-.progress-bar { width: 0%; height: 100%; background-color: var(--accent-critical-color); box-shadow: 0 0 6px var(--accent-critical-color); transition: width 0.12s linear; }
-.splash-subtext { font-size: 0.75em; color: var(--text-secondary-color); animation: text-flicker-subtle 3s infinite alternate; }
 
 .interface-container {
-    width: 100vw; height: 100vh; display: grid;
-    grid-template-columns: 3fr 1fr; grid-template-rows: 28px 1fr 16px;
-    grid-template-areas: "top-bar top-bar" "main-display control-panel" "status-bar status-bar";
-    gap: 1px; padding: 1px; position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 320px 1fr 320px; /* Slightly wider sidebars */
+    grid-template-rows: 55px 1fr 45px;    /* Adjusted bar heights */
+    grid-template-areas:
+        "top-bar top-bar top-bar"
+        "left-sidebar main-content right-sidebar"
+        "bottom-bar bottom-bar bottom-bar";
+    gap: 5px; /* Reduced gap for tighter FUI look */
+    padding: 5px; /* Reduced padding */
 }
-.interface-container::before { /* Base heavy scanlines */
-    content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    background: repeating-linear-gradient(transparent, transparent 2px, var(--scanline-heavy-color) 2px, var(--scanline-heavy-color) 3px);
-    opacity: 1; pointer-events: none; z-index: 1; animation: scanline-move 20s linear infinite;
+
+/* Base panel styling with corner cuts */
+.panel {
+    background-color: var(--secondary-bg-color);
+    border: 1px solid var(--border-color);
+    position: relative;
+    padding: 10px; /* Base padding for panels */
 }
-.interface-container::after { /* Noise */
-    content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.0' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: var(--analogue-noise-opacity); pointer-events: none; z-index: 2; animation: noise-flicker 0.06s linear infinite alternate;
+
+/* Corner cut effect using pseudo-elements */
+.panel::before, .panel::after {
+    content: '';
+    position: absolute;
+    width: 10px; /* Size of the cut */
+    height: 10px; /* Size of the cut */
+    background-color: var(--primary-bg-color); /* Match body background to "cut" the corner */
 }
+/* Top-left cut */
+.panel::before { top: -1px; left: -1px; clip-path: polygon(0 0, 100% 0, 0 100%); }
+/* Top-right cut */
+/* To add more cuts, you'd need more pseudo-elements or wrapper divs. For now, one cut example. */
+/* Alternatively, a border-image or complex clip-path could do all four. */
+
 
 .top-bar {
-    grid-area: top-bar; background-color: var(--panel-bg-color);
-    color: var(--accent-highlight-color); display: flex;
-    justify-content: space-between; align-items: center; padding: 0 6px;
-    font-weight: 500; font-size: 0.7em;
-    --aug-border-all: 1px; --aug-border-bg: var(--border-color);
-    --aug-tl: var(--aug-corner-clip); --aug-tr: var(--aug-corner-clip);
-    --aug-bl: var(--aug-corner-clip); --aug-br: var(--aug-corner-clip);
-    --aug-inlay-all: var(--aug-inlay-size); --aug-inlay-bg: var(--aug-inlay-bg-default);
-    z-index: 10;
+    grid-area: top-bar;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px; /* Specific padding for top-bar */
+    font-family: var(--font-primary);
 }
-.top-bar .title-main { flex-grow: 1; letter-spacing: 0.1px; }
-.top-bar .title-sub { margin: 0 8px; color: var(--text-primary-color); }
-.top-bar .title-version { color: var(--text-secondary-color); }
-
-.main-display-panel, .control-panel {
-    padding: 6px; position: relative;
-    --aug-border-all: var(--aug-border-size); --aug-border-bg: var(--border-color);
-    --aug-inlay-all: var(--aug-inlay-size); --aug-inlay-bg: var(--aug-inlay-bg-default);
-    --aug-tl: var(--aug-corner-clip); --aug-tr: var(--aug-corner-clip);
-    --aug-bl: var(--aug-corner-clip); --aug-br: var(--aug-corner-clip);
-    z-index: 5;
+.top-bar, .sidebar, .main-content, .bottom-bar { /* Apply panel base to all major sections */
+    background-color: var(--secondary-bg-color);
+    border: 1px solid var(--border-color);
+    position: relative; /* For potential absolute children or pseudo elements */
 }
-.main-display-panel {
-    grid-area: main-display; background-color: var(--main-display-bg);
-    display: flex; justify-content: center; align-items: center;
-    position: relative; overflow: hidden;
-}
-.main-display-panel.critical-state::before { /* Critical red overlay */
-    content: ""; position: absolute; top:0; left:0; right:0; bottom:0;
-    background-color: var(--scanline-critical-overlay-color);
-    z-index: 3; pointer-events: none; animation: critical-pulse 0.6s infinite alternate;
-}
-
-.control-panel {
-    grid-area: control-panel; background-color: var(--panel-bg-color);
-    display: flex; flex-direction: column; gap: 5px; overflow-y: auto;
-}
-
-.ambient-data {
-    position: absolute; font-size: 0.5em; color: var(--text-secondary-color);
-    opacity: 0.3; line-height: 1; z-index: 6; pointer-events: none;
-    animation: text-flicker-subtle 10s infinite alternate;
-}
-.ambient-data span { display: block; }
-.ambient-data.top-left { top: 4px; left: 4px; } .ambient-data.top-right { top: 4px; right: 4px; text-align: right; }
-.ambient-data.bottom-left { bottom: 4px; left: 4px; } .ambient-data.bottom-right { bottom: 4px; right: 4px; text-align: right; }
-
-.control-group { display: flex; flex-direction: column; gap: 2.5px; }
-.control-button {
-    background-color: var(--panel-bg-color); color: var(--text-primary-color);
-    padding: 4px 6px; text-align: left; font-family: var(--font-main);
-    font-size: 0.65em; text-transform: uppercase; cursor: pointer;
-    display: flex; justify-content: space-between; align-items: center;
-    --aug-border-all: 1px; --aug-border-bg: var(--border-color);
-    --aug-tl: calc(var(--aug-corner-clip) * 0.3); --aug-tr: calc(var(--aug-corner-clip) * 0.3);
-    --aug-bl: calc(var(--aug-corner-clip) * 0.3); --aug-br: calc(var(--aug-corner-clip) * 0.3);
-    --aug-inlay-all: var(--aug-inlay-size); --aug-inlay-bg: var(--aug-inlay-bg-default);
-    transition: color 0.08s, background-color 0.08s;
-}
-.control-button:hover { color: var(--accent-highlight-color); background-color: #181818; --aug-border-bg: var(--highlight-border-color); }
-.control-button.critical-action { color: var(--accent-critical-color); --aug-border-bg: var(--highlight-border-color); }
-.control-button.critical-action:hover { background-color: var(--accent-critical-color); color: var(--base-bg-color); --aug-border-bg: var(--accent-critical-color); }
-.control-button .button-status { font-weight: 500; }
-
-.data-readout-group { display: flex; flex-direction: column; gap: 3px; }
-.data-box {
-    background-color: var(--panel-bg-color); padding: 4px;
-    --aug-border-all: 1px; --aug-border-bg: var(--border-color);
-    --aug-tl: calc(var(--aug-corner-clip) * 0.5); --aug-tr: calc(var(--aug-corner-clip) * 0.5);
-    --aug-bl: calc(var(--aug-corner-clip) * 0.5); --aug-br: calc(var(--aug-corner-clip) * 0.5);
-    --aug-inlay-all: var(--aug-inlay-size); --aug-inlay-bg: var(--aug-inlay-bg-default);
-}
-.data-label { font-size: 0.55em; margin-bottom: 1.5px; color: var(--text-secondary-color); }
-.data-value { font-size: 1.1em; font-weight: 500; color: var(--accent-highlight-color); }
-.data-value.large { font-size: 1.6em; text-align: center; }
-.data-unit { font-size: 0.55em; text-align: center; color: var(--text-secondary-color); }
-.value-critical, .value-alert { color: var(--status-critical-color) !important; text-shadow: 0 0 4px var(--status-critical-color); animation: text-flicker-strong 0.7s infinite !important; }
-.value-warning { color: var(--status-warning-color) !important; } .value-offline { color: var(--status-offline-color) !important; }
-.value-ok { color: var(--status-ok-color) !important; } .value-nominal { color: var(--status-nominal-color) !important; } .value-stable { color: var(--status-stable-color) !important; }
-
-.data-list-group {
-    background-color: var(--panel-bg-color); padding: 4px;
-    flex-grow: 1; display: flex; flex-direction: column; min-height: 120px;
-    --aug-border-all: 1px; --aug-border-bg: var(--border-color);
-    --aug-tl: var(--aug-corner-clip); --aug-tr: var(--aug-corner-clip);
-    --aug-bl: var(--aug-corner-clip); --aug-br: var(--aug-corner-clip);
-    --aug-inlay-all: var(--aug-inlay-size); --aug-inlay-bg: var(--aug-inlay-bg-default);
-}
-.list-header { font-size: 0.6em; padding-bottom: 1.5px; border-bottom: 1px solid var(--border-color); margin-bottom: 3px; color: var(--accent-highlight-color); }
-.data-list-group ul { list-style: none; padding: 0; margin: 0; font-size: 0.65em; }
-.data-list-group li { display: flex; justify-content: space-between; padding: 1px 0; border-bottom: 1px dashed #181818; color: var(--text-primary-color); }
-.data-list-group li:last-child { border-bottom: none; }
-.data-list-group li span:first-child { margin-right: 3px; color: var(--text-secondary-color); }
-.module-detail { color: var(--text-secondary-color); }
-
-.status-bar {
-    grid-area: status-bar; background-color: var(--panel-bg-color);
-    border-top: 1px solid var(--border-color); color: var(--text-secondary-color);
-    font-size: 0.6em; display: flex; align-items: center; justify-content: space-between; padding: 0 5px; z-index: 10;
-}
-#mic-indicator.ready { color: var(--accent-highlight-color); } #mic-indicator.denied { color: var(--accent-critical-color); }
-#global-status-text { color: var(--accent-critical-color); font-weight: 500; animation: text-flicker-strong 1s infinite; }
-
-/* == ENERGY CORE STYLES (Simplified & Abstract) == */
-.core-status-widget {
-    background-color: transparent; padding: 5px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    width: 100%; height: 100%; flex-shrink: 0; z-index: 5; position: relative;
-    --aug-border-all: 1px; --aug-border-bg: var(--border-color);
-    --aug-inlay-all: 0px;
-    --aug-tl: var(--aug-corner-clip); --aug-tr: var(--aug-corner-clip);
-    --aug-bl: var(--aug-corner-clip); --aug-br: var(--aug-corner-clip);
-}
-.core-widget-header-overlay {
-    position: absolute; top: 10px; left: 0; right: 0;
-    font-family: var(--font-main); color: var(--accent-critical-color); font-size: 0.9em;
-    text-transform: uppercase; padding-bottom: 2px; text-align: center; z-index: 7;
-    text-shadow: 0 0 8px var(--accent-critical-color), 0 0 3px black;
-    pointer-events: none;
-}
-.core-widget-readout-overlay {
-    position: absolute; bottom: 10px; left: 0; right: 0;
-    font-family: var(--font-main); color: var(--text-primary-color); font-size: 0.7em;
-    text-align: center; z-index: 7; background-color: rgba(0,0,0,0.4); padding: 2px 0;
-    pointer-events: none;
-}
-.core-widget-readout-overlay span { margin: 0 3px; display: inline-block; white-space: nowrap; }
-
-.energy-core-container {
-    width: 75%; /* Core takes up most of the widget */
-    padding-bottom: 75%; /* Maintain aspect ratio for the circle */
-    position: relative;
-    display: flex; justify-content: center; align-items: center;
-}
-.energy-core {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    border-radius: 50%;
-    background-color: var(--accent-critical-color);
-    box-shadow:
-        0 0 15px var(--accent-critical-color),       /* Inner intense glow */
-        0 0 30px var(--accent-critical-color),       /* Main core glow */
-        0 0 60px rgba(255,0,0,0.5),    /* Wider atmospheric glow */
-        0 0 100px rgba(150,0,0,0.3),   /* Faintest outer haze */
-        inset 0 0 20px rgba(100,0,0,0.7); /* Inner shadow for depth */
-    animation: core-main-pulse 2.5s ease-in-out infinite alternate;
-    display: flex; justify-content: center; align-items: center;
-    overflow: hidden; /* To contain pulse layers */
-}
-.core-pulse-layer {
+/* Applying corner cuts - this is a simple example for one corner.
+   A more robust solution for all corners might use border-image or multiple pseudo-elements.
+   For simplicity, we'll keep it as a basic border for now or use a simpler decoration.
+*/
+.top-bar::before, .bottom-bar::before, .sidebar::before /* Example top-left cut */
+/* {
+    content: '';
     position: absolute;
-    width: 100%; height: 100%;
-    border-radius: 50%;
-    opacity: 0.5;
-}
-.core-pulse-layer.layer1 {
-    background: radial-gradient(circle, transparent 30%, var(--energy-core-color1) 60%, var(--energy-core-color2) 80%, transparent 90%);
-    animation: core-sub-pulse1 2s ease-in-out infinite alternate;
-    mix-blend-mode: screen;
-}
-.core-pulse-layer.layer2 {
-    background: radial-gradient(circle, var(--energy-core-color2) 10%, var(--energy-core-color3) 40%, transparent 70%);
-    transform: scale(0.7);
-    animation: core-sub-pulse2 2.3s ease-in-out infinite alternate 0.3s;
-    mix-blend-mode: lighten;
-}
-.core-pulse-layer.layer3 { /* Simulates internal energy streaks */
-    background: repeating-conic-gradient(var(--energy-core-color1) 0% 5%, transparent 5% 15%);
-    transform: scale(0.5);
-    opacity: 0.3;
-    animation: core-rotate 8s linear infinite;
-}
-.core-center-glow {
-    width: 20%; height: 20%;
-    background-color: white;
-    border-radius: 50%;
-    box-shadow: 0 0 10px 5px white, 0 0 20px 10px var(--accent-critical-color);
-    opacity: 0.6;
-    animation: core-center-flicker 0.5s linear infinite alternate;
-}
+    width: 12px; height: 12px;
+    top: 0; left: 0;
+    border-left: 2px solid var(--accent-color);
+    border-top: 2px solid var(--accent-color);
+} */
 
 
-/* == ANIMATION KEYFRAMES == */
-@keyframes core-main-pulse {
-    from { transform: scale(0.98); box-shadow: 0 0 12px var(--accent-critical-color), 0 0 25px var(--accent-critical-color), 0 0 50px rgba(255,0,0,0.4), 0 0 80px rgba(150,0,0,0.25), inset 0 0 18px rgba(100,0,0,0.6); }
-    to   { transform: scale(1);   box-shadow: 0 0 18px var(--accent-critical-color), 0 0 35px var(--accent-critical-color), 0 0 70px rgba(255,0,0,0.6), 0 0 120px rgba(150,0,0,0.35), inset 0 0 25px rgba(100,0,0,0.8); }
+.sidebar {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-y: auto;
 }
-@keyframes core-sub-pulse1 { from { opacity: 0.4; transform: scale(0.95); } to { opacity: 0.7; transform: scale(1.05); } }
-@keyframes core-sub-pulse2 { from { opacity: 0.3; transform: scale(0.65); } to { opacity: 0.6; transform: scale(0.75); } }
-@keyframes core-center-flicker { from { opacity: 0.5; } to { opacity: 0.8; } }
-@keyframes core-rotate { from { transform: scale(0.5) rotate(0deg); } to { transform: scale(0.5) rotate(360deg); } }
 
+.left-sidebar {
+    grid-area: left-sidebar;
+}
 
-@keyframes scanline-move { 0% { background-position-y: 0px; } 100% { background-position-y: 3px; } }
-@keyframes noise-flicker { 0%, 100% { opacity: var(--analogue-noise-opacity); } 50% { opacity: calc(var(--analogue-noise-opacity) * 0.3); } }
-@keyframes text-flicker { 0%{opacity:1;} 24%{opacity:1;} 25%{opacity:0.2;} 26%{opacity:1;} 50%{opacity:1;} 51%{opacity:0.3;} 52%{opacity:1;} 75%{opacity:1;} 76%{opacity:0.1;} 77%{opacity:1;} 100%{opacity:1;} }
-@keyframes text-flicker-strong { 0%{opacity:1;} 10%{opacity:1;} 11%{opacity:0.05;} 12%{opacity:1;} 20%{opacity:1;} 21%{opacity:0.1;} 22%{opacity:1;} 80%{opacity:1;} 81%{opacity:0.02;} 82%{opacity:1;} 100%{opacity:1;} }
-@keyframes text-flicker-subtle { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.15; } }
-@keyframes critical-pulse { 0%, 100% { opacity: 0.03; } 50% { opacity: 0.07; } }
+.right-sidebar {
+    grid-area: right-sidebar;
+}
+
+.main-content {
+    grid-area: main-content;
+    background-color: var(--primary-bg-color); /* Darker for the canvas to stand out */
+    border: 1px solid var(--border-color-strong);
+    display: flex; /* To center the canvas */
+    justify-content: center;
+    align-items: center;
+    padding: 5px; /* Minimal padding to maximize canvas space */
+}
+
+.bottom-bar {
+    grid-area: bottom-bar;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+    font-family: var(--font-primary);
+    font-size: 0.9em;
+}
+
+.widget {
+    background-color: rgba(0, 0, 0, 0.25); /* Darker, semi-transparent for depth */
+    border: 1px solid var(--border-color);
+    /* border-image: linear-gradient(to bottom right, var(--accent-color) 0%, var(--accent-color-faint) 100%);
+    border-image-slice: 1; */ /* Example of border image, can be complex */
+    padding: 12px;
+    border-radius: 0px; /* Sharp corners */
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.5); /* Inner shadow for depth */
+}
+
+.widget h3 {
+    font-family: var(--font-primary);
+    color: var(--accent-color);
+    font-size: 1.1em;
+    margin: -12px -12px 10px -12px; /* Pull header to edges */
+    padding: 8px 12px;
+    background-color: rgba(0, 255, 255, 0.05); /* Very faint accent background for header */
+    border-bottom: 1px solid var(--border-color-strong);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.widget p {
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+/* Styling for the canvas element itself */
+#aiCoreCanvas {
+    /* Dimensions will be set via JavaScript */
+    max-width: 100%;
+    max-height: 100%;
+    /* border: 1px dashed var(--accent-color-dim); */ /* Optional border for canvas visibility */
+}
+
+/* Old .ai-core-display styles are no longer needed */
+
+.status-indicator {
+    padding: 5px 12px;
+    border-radius: 2px;
+    font-weight: normal; /* Less bold for a sleeker look */
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 5px rgba(0,0,0,0.7);
+}
+
+.mic-status.off, .cam-status.off { color: var(--error-color); opacity: 0.7; }
+.mic-status.ready, .cam-status.ready { color: var(--success-color); }
+.mic-status.listening { color: var(--accent-color); animation: blink 0.8s infinite; }
+
+.ai-activity.standby { color: var(--warning-color); opacity: 0.8; }
+.ai-activity.processing { color: var(--accent-color); animation: blink 0.8s infinite; }
+.ai-activity.speaking { color: var(--success-color); font-weight: bold; } /* Speaking can be bolder */
+
+@keyframes blink {
+    0%, 100% { opacity: 1; text-shadow: 0 0 3px var(--accent-color), 0 0 8px var(--accent-color); }
+    50% { opacity: 0.6; text-shadow: none; }
+}
 
 /* Scrollbar styling */
-.control-panel::-webkit-scrollbar { width: 1.5px; }
-.control-panel::-webkit-scrollbar-track { background: var(--base-bg-color); }
-.control-panel::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 0px; }
-.control-panel { scrollbar-width: thin; scrollbar-color: var(--border-color) var(--base-bg-color); }
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.3);
+    border-radius: 0px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color-dim);
+    border-radius: 0px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent-color);
+}

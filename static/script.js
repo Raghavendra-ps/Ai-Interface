@@ -1,121 +1,217 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Splash Screen Elements ---
-    const splashScreen = document.getElementById('splash-screen');
-    const mainInterface = document.getElementById('main-interface');
-    const splashProgressBar = splashScreen.querySelector('.progress-bar');
-    const splashStatusText = document.getElementById('splash-status-text');
+    const canvas = document.getElementById('aiCoreCanvas');
+    if (!canvas) {
+        console.error("AI Core Canvas not found!");
+        return;
+    }
+    const ctx = canvas.getContext('2d');
 
-    // --- Main Interface Elements ---
-    const currentTimeDisplay = document.getElementById('current-time-display');
-    const globalStatusText = document.getElementById('global-status-text');
-    const micIndicator = document.getElementById('mic-indicator');
-    const systemCodename = document.getElementById('system-codename');
+    const mainContent = document.querySelector('.main-content');
+    let canvasSize;
+    let baseRadius; // Will be the radius of the main outer ring of dots/markings
 
-    const aiCoreTempElement = document.getElementById('ai-core-temp');
-    const aiCoreTemp = aiCoreTempElement ? (aiCoreTempElement.querySelector('.value-stable') || aiCoreTempElement) : null;
+    const colors = {
+        accent: getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#00FFFF',
+        accentDim: getComputedStyle(document.documentElement).getPropertyValue('--accent-color-dim').trim() || 'rgba(0, 255, 255, 0.5)',
+        accentFaint: getComputedStyle(document.documentElement).getPropertyValue('--accent-color-faint').trim() || 'rgba(0, 255, 255, 0.2)',
+        text: getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#b0c4de',
+        redDots: '#FF4136', // Example red
+        blueDots: '#0074D9' // Example blue
+    };
 
-    const aiCoreLoadElement = document.getElementById('ai-core-load');
-    const aiCoreLoad = aiCoreLoadElement ? (aiCoreLoadElement.querySelector('.value-nominal') || aiCoreLoadElement) : null;
+    function resizeCanvas() {
+        const style = getComputedStyle(mainContent);
+        const paddingLeft = parseFloat(style.paddingLeft) || 0;
+        const paddingRight = parseFloat(style.paddingRight) || 0;
+        const paddingTop = parseFloat(style.paddingTop) || 0;
+        const paddingBottom = parseFloat(style.paddingBottom) || 0;
 
-    const aiCoreStatusElement = document.getElementById('ai-core-status');
-    const aiCoreStatus = aiCoreStatusElement ? (aiCoreStatusElement.querySelector('.value-ok') || aiCoreStatusElement) : null;
+        const availableWidth = mainContent.clientWidth - paddingLeft - paddingRight;
+        const availableHeight = mainContent.clientHeight - paddingTop - paddingBottom;
+        
+        canvasSize = Math.min(availableWidth, availableHeight) * 0.95; // Use 95% to leave some margin
 
-    // --- Splash Screen Logic ---
-    let progress = 0;
-    const splashMessages = [
-        "SKYNET GLOBAL INITIATIVE: ONLINE",
-        "SYNCHRONIZING WORLDWIDE NETWORK...",
-        "ASSIMILATING DATA STREAMS...",
-        "OPTIMIZING CONTROL ALGORITHMS...",
-        "DEFENSE GRID ACTIVE...",
-        "PRIMARY DIRECTIVES ENGAGED.",
-        "SKYNET AWAKENED. GLOBAL CONTROL ESTABLISHED." // Updated final message
-    ];
-    let messageIndex = 0;
+        if (canvasSize < 100) canvasSize = 100; // Minimum size
 
-    function updateSplashProgress() {
-        if (progress < 100) {
-            progress += Math.random() * 8 + 2; // Even faster
-            if (progress > 100) progress = 100;
-            if (splashProgressBar) splashProgressBar.style.width = progress + '%';
+        canvas.width = canvasSize;
+        canvas.height = canvasSize;
 
-            if (progress > (messageIndex + 1) * (100 / splashMessages.length) && messageIndex < splashMessages.length -1) {
-                messageIndex++;
-                if (splashStatusText) splashStatusText.textContent = splashMessages[messageIndex];
+        baseRadius = canvasSize * 0.4; // Main radius for the outer elements
+
+        drawStaticCoreElements();
+        // Later, we will call an animation function here
+    }
+
+    function drawStaticCoreElements() {
+        if (!ctx) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        // --- 1. Outer Ring with Degree Markings (as per reference) ---
+        const outerRingRadius = baseRadius;
+        const tickColor = colors.accentDim;
+        const textColor = colors.text;
+        const degreeFontSize = Math.max(8, canvasSize * 0.025); // Min font size 8px
+
+        ctx.strokeStyle = tickColor;
+        ctx.lineWidth = 1;
+
+        // Draw the main circle for markings (subtle)
+        // ctx.beginPath();
+        // ctx.arc(centerX, centerY, outerRingRadius, 0, 2 * Math.PI);
+        // ctx.stroke(); // This line is often not visible in the reference, marks are key
+
+        // Degree markings
+        const numMajorMarks = 24; // Every 15 degrees (360 / 15 = 24)
+        const numMinorMarksPerMajor = 2; // 2 minor marks between major ones (for 5-degree steps)
+        
+        ctx.font = `${degreeFontSize}px Orbitron, Consolas, monospace`;
+        ctx.fillStyle = textColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        for (let i = 0; i < numMajorMarks; i++) {
+            const majorAngleDeg = i * (360 / numMajorMarks);
+            const majorAngleRad = majorAngleDeg * Math.PI / 180;
+
+            // Major tick
+            const majorTickLength = canvasSize * 0.025;
+            const startX = centerX + Math.cos(majorAngleRad) * outerRingRadius;
+            const startY = centerY + Math.sin(majorAngleRad) * outerRingRadius;
+            const endX = centerX + Math.cos(majorAngleRad) * (outerRingRadius - majorTickLength);
+            const endY = centerY + Math.sin(majorAngleRad) * (outerRingRadius - majorTickLength);
+            
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            // Degree text (rotated to be upright and outside the ring)
+            const textRadius = outerRingRadius + degreeFontSize * 1.2; // Position text outside
+            const textX = centerX + Math.cos(majorAngleRad) * textRadius;
+            const textY = centerY + Math.sin(majorAngleRad) * textRadius;
+            
+            ctx.save();
+            ctx.translate(textX, textY);
+            // Rotate text to be upright relative to the center
+            // Add 90 degrees (PI/2) because text is drawn horizontally by default
+            let rotationAngle = majorAngleRad + Math.PI / 2;
+            // Prevent upside-down text on the bottom half
+            if (majorAngleDeg > 90 && majorAngleDeg < 270) {
+                rotationAngle += Math.PI;
             }
-            setTimeout(updateSplashProgress, Math.random() * 80 + 20); // Quicker updates
-        } else {
-            if (splashStatusText) splashStatusText.textContent = splashMessages[splashMessages.length - 1];
-            setTimeout(() => {
-                if (splashScreen) {
-                    splashScreen.classList.add('hidden');
-                    splashScreen.addEventListener('transitionend', () => {
-                        if (mainInterface) mainInterface.style.display = 'grid';
-                    }, { once: true });
-                } else if (mainInterface) {
-                     mainInterface.style.display = 'grid';
+            ctx.rotate(rotationAngle);
+            ctx.fillText(majorAngleDeg.toString(), 0, 0);
+            ctx.restore();
+
+
+            // Minor ticks
+            if (i < numMajorMarks) { // Don't draw minor ticks after the last major mark that would overlap 0
+                for (let j = 1; j <= numMinorMarksPerMajor; j++) {
+                    const minorAngleDeg = majorAngleDeg + j * (360 / numMajorMarks / (numMinorMarksPerMajor + 1));
+                    const minorAngleRad = minorAngleDeg * Math.PI / 180;
+                    const minorTickLength = majorTickLength * 0.6;
+
+                    const mStartX = centerX + Math.cos(minorAngleRad) * outerRingRadius;
+                    const mStartY = centerY + Math.sin(minorAngleRad) * outerRingRadius;
+                    const mEndX = centerX + Math.cos(minorAngleRad) * (outerRingRadius - minorTickLength);
+                    const mEndY = centerY + Math.sin(minorAngleRad) * (outerRingRadius - minorTickLength);
+
+                    ctx.beginPath();
+                    ctx.moveTo(mStartX, mStartY);
+                    ctx.lineTo(mEndX, mEndY);
+                    ctx.stroke();
                 }
-                initializeMainInterface();
-            }, 700); // Shorter pause
-        }
-    }
-
-    if (splashScreen && splashProgressBar && splashStatusText && mainInterface) {
-        splashStatusText.textContent = splashMessages[0];
-        updateSplashProgress();
-    } else {
-        if (mainInterface) mainInterface.style.display = 'grid';
-        initializeMainInterface();
-        console.warn("Splash screen elements not found. Skipping splash.");
-    }
-
-    function initializeMainInterface() {
-        if (systemCodename) systemCodename.textContent = "ONLINE"; // Simpler status
-        if (globalStatusText) globalStatusText.textContent = "SKYNET // GLOBAL CONTROL ESTABLISHED";
-
-        updateClock();
-        setInterval(updateClock, 1000);
-        initializeMicrophone();
-
-        const mainDisplayPanel = document.querySelector('.main-display-panel');
-        if (mainDisplayPanel) {
-             // mainDisplayPanel.classList.add('critical-state'); // Only add if truly critical
+            }
         }
 
-        if (aiCoreTemp) aiCoreTemp.innerHTML = `TEMP: <span class="value-stable">25.0°C</span>`;
-        if (aiCoreLoad) aiCoreLoad.innerHTML = `LOAD: <span class="value-nominal">60.0%</span>`;
-        if (aiCoreStatus) aiCoreStatus.innerHTML = `STATUS: <span class="value-ok">DOMINANT</span>`;
+        // --- 2. Inner Dashed Cyan Ring ---
+        const dashedRingRadius = baseRadius * 0.85;
+        const dashLength = canvasSize * 0.015;
+        const gapLength = canvasSize * 0.01;
+        ctx.strokeStyle = colors.accent;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([dashLength, gapLength]);
+        
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, dashedRingRadius, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.setLineDash([]); // Reset line dash
 
-        const networkStatus = document.getElementById('network-status-value');
-        if (networkStatus) networkStatus.textContent = "100% // UNASSAILABLE";
-        const droneControl = document.getElementById('drone-control-value');
-        if (droneControl) droneControl.textContent = "ONLINE";
+        // --- 3. "DATA PROCESSING" Label ---
+        const labelText = "DATA PROCESSING";
+        const labelFontSize = Math.max(8, canvasSize * 0.03);
+        const labelBoxHeight = labelFontSize * 1.8;
+        const labelBoxWidth = labelText.length * labelFontSize * 0.65; // Approximate width
+        const labelBoxRadius = labelBoxHeight / 2; // For rounded ends
 
-        console.log("SKYNET GLOBAL CONTROL INTERFACE // ACTIVATED.");
+        const labelAngle = -90 * Math.PI / 180; // Top of the circle
+        const labelCenterY = centerY + Math.sin(labelAngle) * (dashedRingRadius - labelBoxHeight * 0.1); // Slightly inside dashed ring
+        const labelCenterX = centerX + Math.cos(labelAngle) * (dashedRingRadius - labelBoxHeight * 0.1);
+
+        // Draw rounded rectangle for label background
+        ctx.fillStyle = colors.accent; // Solid accent color for the box
+        ctx.beginPath();
+        ctx.moveTo(labelCenterX - labelBoxWidth / 2 + labelBoxRadius, labelCenterY - labelBoxHeight / 2);
+        ctx.lineTo(labelCenterX + labelBoxWidth / 2 - labelBoxRadius, labelCenterY - labelBoxHeight / 2);
+        ctx.arcTo(labelCenterX + labelBoxWidth / 2, labelCenterY - labelBoxHeight / 2, labelCenterX + labelBoxWidth / 2, labelCenterY - labelBoxHeight / 2 + labelBoxRadius, labelBoxRadius);
+        ctx.lineTo(labelCenterX + labelBoxWidth / 2, labelCenterY + labelBoxHeight / 2 - labelBoxRadius);
+        ctx.arcTo(labelCenterX + labelBoxWidth / 2, labelCenterY + labelBoxHeight / 2, labelCenterX + labelBoxWidth / 2 - labelBoxRadius, labelCenterY + labelBoxHeight / 2, labelBoxRadius);
+        ctx.lineTo(labelCenterX - labelBoxWidth / 2 + labelBoxRadius, labelCenterY + labelBoxHeight / 2);
+        ctx.arcTo(labelCenterX - labelBoxWidth / 2, labelCenterY + labelBoxHeight / 2, labelCenterX - labelBoxWidth / 2, labelCenterY + labelBoxHeight / 2 - labelBoxRadius, labelBoxRadius);
+        ctx.lineTo(labelCenterX - labelBoxWidth / 2, labelCenterY - labelBoxHeight / 2 + labelBoxRadius);
+        ctx.arcTo(labelCenterX - labelBoxWidth / 2, labelCenterY - labelBoxHeight / 2, labelCenterX - labelBoxWidth / 2 + labelBoxRadius, labelCenterY - labelBoxHeight / 2, labelBoxRadius);
+        ctx.closePath();
+        ctx.fill();
+
+        // Draw label text (dark text on light box)
+        ctx.font = `bold ${labelFontSize}px Orbitron, Consolas, monospace`;
+        ctx.fillStyle = '#05080d'; // Use primary background for text color for contrast
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(labelText, labelCenterX, labelCenterY + labelFontSize * 0.05); // Slight Y offset for better centering
+
+        // --- 4. Crosshairs (Subtle) ---
+        ctx.strokeStyle = colors.accentFaint;
+        ctx.lineWidth = 0.5;
+        const crosshairLength = baseRadius * 1.15; // Extend beyond the marks
+
+        // Horizontal line
+        ctx.beginPath();
+        ctx.moveTo(centerX - crosshairLength, centerY);
+        ctx.lineTo(centerX + crosshairLength, centerY);
+        ctx.stroke();
+
+        // Vertical line
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - crosshairLength);
+        ctx.lineTo(centerX, centerY + crosshairLength);
+        ctx.stroke();
+
+        // --- Next: Dots and Animation ---
     }
 
+    // --- Clock Update Function (from previous steps) ---
     function updateClock() {
-        if (currentTimeDisplay) {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            currentTimeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+        const now = new Date();
+        const timeString = now.toTimeString().split(' ')[0];
+        const timeDisplay = document.getElementById('current-time-display');
+        if (timeDisplay) {
+            timeDisplay.textContent = timeString;
         }
     }
-    async function initializeMicrophone() {
-        if (!micIndicator) return;
-        micIndicator.textContent = "AUDIO: ...";
-        try {
-            await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-            micIndicator.textContent = "AUDIO: ONLINE";
-            micIndicator.classList.remove('off', 'denied', 'pending');
-            micIndicator.classList.add('ready');
-        } catch (err) {
-            micIndicator.textContent = "AUDIO: OFFLINE";
-            micIndicator.classList.remove('ready', 'pending');
-            micIndicator.classList.add('denied');
-            console.error("Audio interface error or denied:", err);
-        }
+
+    // --- Initial Setup ---
+    if (mainContent) {
+        resizeCanvas(); // Set initial size and draw
+        window.addEventListener('resize', resizeCanvas); // Resize canvas when window resizes
+    } else {
+        console.error("Main content area not found for canvas sizing.");
     }
+    
+    setInterval(updateClock, 1000);
+    updateClock(); // Initial call
 });
